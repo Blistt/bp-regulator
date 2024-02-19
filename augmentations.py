@@ -1,30 +1,73 @@
 import pandas as pd
+from sklearn.impute import KNNImputer
+import numpy as np
+from sklearn.neighbors import NearestNeighbors
 
 def rolling_k_days(predictor, k):
-  '''
-  Populates missing values a time series table with the rolling average of the k prior days
-  (not all days will be populated, as any day for which there is no data in the previous k days will
-  remain as an empty value)
-  '''
-  predictor_df = predictor.copy()
-  print('original shape', predictor_df.shape)
+    '''
+    Populates missing values a time series table with the rolling average of the k prior days
+    (not all days will be populated, as any day for which there is no data in the previous k days will
+    remain as an empty value)
+    '''
 
-  # Resample to daily data (create an entry for everyday in the dates range, even if it has empty values)
-  predictor_df['date'] = pd.to_datetime(predictor_df['date'])
-  predictor_df.set_index('date', inplace=True)
-  # predictor_df = predictor_df.groupby('healthCode').resample('D').mean()
-  print('post sample shape', predictor_df.shape)
+    # Ensure your data is sorted by 'date'
+    predictor.sort_values(by=['healthCode', 'date'], inplace=True)
 
-  # Fill in missing days with NaNs
-  predictor_df = predictor_df.reset_index().set_index('date').groupby('healthCode', group_keys=False).apply(lambda x: x.asfreq('D')).reset_index()
+    # Get all column names except 'healthCode' and 'date'
+    cols = [col for col in predictor.columns if col not in ['healthCode', 'date', 'systoclic', 'diastolic']]
 
-  predictor_df = predictor_df.sort_values(['healthCode', 'date'])
+    # Apply the operation to all other columns
+    for col in cols:
+        predictor[col] = predictor.groupby('healthCode')[col].transform(lambda x: x.rolling(window=k, min_periods=1).mean())
+        predictor[col] = predictor.groupby('healthCode')[col].ffill()  
 
-  # Select variables (columns) to augment
-  cols_to_augment = predictor_df.columns[:2]  # augment all but the first two
-  cols_to_augment = ['floors']
+    return predictor
 
-  # Calculate rolling average of k days to populate as many days with missing data as possible
-  predictor_df[cols_to_augment] = predictor_df.groupby('healthCode')[cols_to_augment].rolling(window=k, min_periods=1).mean().reset_index(0, drop=True)
 
-  return predictor_df
+# def knn_impute(predictor):
+#     cols = [col for col in predictor.columns if col not in ['healthCode', 'date', 'systolic', 'diastolic']]
+
+#     # Create the imputer
+#     imputer = KNNImputer(n_neighbors=3)
+
+#     # Split the DataFrame by 'id', apply the imputation, and concatenate the results
+#     predictor_imputed = pd.concat(
+#         (pd.DataFrame(imputer.fit_transform(sub_df[cols]), columns=cols) 
+#          for id, sub_df in predictor.groupby('healthCode')),
+#         ignore_index=True
+#     )
+#     # Convert the result back t+o a DataFrame (if necessary)
+#     predictor_imputed = pd.DataFrame(predictor_imputed, columns=predictor.columns)
+#     print(predictor.head())
+#     print(predictor_imputed.head())
+
+#     return predictor_imputed
+
+
+def get_neighbors(df, index, k=3):
+    '''
+    Used only for data exploration purposes. This function returns the k nearest neighbors 
+    of the specified index in the DataFrame
+    '''
+    # Select the columns & index to use for the nearest neighbors
+    df.fillna(0, inplace=True)
+    cols = [col for col in df.columns if col not in ['healthCode', 'date', 'systoclic', 'diastolic']]
+    X = df[df['healthCode'] == df['healthCode'].iloc[index]]
+    X = X[cols]
+    X = X.fillna(0)
+
+    # Ensures that we are not asking for more neighbors than there are entries with selected healthCode
+    print('entries with selected healthCode', X.shape)
+    if k > X.shape[0]:
+        k = X.shape[0] - 1
+
+    # Reset the index and keep the old index
+    X.reset_index(inplace=True)
+
+    # Create the estimator
+    nbrs = NearestNeighbors(n_neighbors=k+1, algorithm='ball_tree').fit(X[cols])
+
+    # Get the k nearest neighbors of the specified index
+    distances, indices = nbrs.kneighbors(X[X['index'] == index][cols].values.reshape(1, -1))
+
+    print(df.iloc[X.iloc[indices[0]]['index']])
