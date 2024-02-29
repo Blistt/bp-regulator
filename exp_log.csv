@@ -1,0 +1,5 @@
+﻿Augmentaion,Dataset size,Algo,n-trees,sys-MAE,dia-MAE,Top N
+KNN-inter,1120,RF,60,10.696,8.835,"wo_calories, bed_time, sleep_minutes, steps, distance_walking"
+KNN-intra,155,RF,60,6.774,4.161,
+K-rolling,,RF,60,,,
+None,,RF,60,,,

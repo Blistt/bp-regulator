@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from utils import aggregate_dicts
 
@@ -13,14 +14,19 @@ def data_split(df, y_columns=['diastolic', 'systolic']):
   return (x_train, y_train), (x_test, y_test)
 
 
-def rfr_predict(dataset, ntrees=30):
+def bp_predict(dataset, model='rf', ntrees=30):
+  # Preprocesses the dataset
   dataset = dataset.copy()
   angel_dataset = dataset.drop(['healthCode', 'date'], axis=1)
   angel_dataset = angel_dataset.dropna()
   print('Shape complete dataset with no NaN values: ' , angel_dataset.shape)
   (x_train, y_train), (x_test, y_test) = data_split(angel_dataset)
 
-  model = RandomForestRegressor(n_estimators=ntrees)
+  # Initializes the model and lists to store metrics and feature importances
+  if model == 'rf':
+    model = RandomForestRegressor(n_estimators=ntrees)
+  elif model == 'xgb':
+    model = XGBRegressor(n_estimators=ntrees)
   feature_importances = []
   mse = []
   mae = []
@@ -36,13 +42,15 @@ def rfr_predict(dataset, ntrees=30):
   # Aggregates systolic and diastolic prediction feature importances
   feature_importances = aggregate_dicts(feature_importances[0], feature_importances[1]) 
   
-  return mse, mae, feature_importances
+  return mse, mae, feature_importances, angel_dataset.shape[0]
 
 
 def get_feature_importances(model, features):
   importances = model.feature_importances_
   feature_importances = {name: score for name, score in zip(features, importances)}
   feature_importances = {k: v for k, v in sorted(feature_importances.items(), key=lambda x: x[1], reverse=True)}
+  if 'heart_rate' in feature_importances:
+    del feature_importances['heart_rate']
   return feature_importances
   
 
