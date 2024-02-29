@@ -1,5 +1,13 @@
 ﻿Augmentaion,Dataset size,Algo,n-trees,sys-MAE,dia-MAE,Top N
-KNN-inter,1120,RF,60,10.696,8.835,"wo_calories, bed_time, sleep_minutes, steps, distance_walking"
-KNN-intra,155,RF,60,6.774,4.161,
-K-rolling,,RF,60,,,
-None,,RF,60,,,
+rf,60,None,17,12.0,8.25,['floors', 'distance_walking', 'bed_time', 'wo_calories', 'active_calories']
+rf,60,K-roll,40,6.125,5.625,['Unnamed: 0', 'wo_calories', 'distance_cycling', 'floors', 'sleep_minutes']
+rf,60,KNN-intra,155,6.419,6.194,['wo_calories', 'Unnamed: 0', 'steps', 'sleep_minutes', 'bed_time']
+rf,60,KNN-inter,1120,9.768,7.554,['Unnamed: 0', 'bed_time', 'wo_calories', 'sleep_minutes', 'steps']
+rf,60,None,17,10.0,6.75,['floors', 'bed_time', 'distance_walking', 'wo_calories', 'distance_cycling']
+rf,60,K-roll,40,8.125,5.75,['floors', 'Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time']
+rf,60,KNN-intra,155,6.387,5.613,['wo_calories', 'Unnamed: 0', 'sleep_minutes', 'distance_walking', 'bed_time']
+rf,60,KNN-inter,1120,9.83,8.688,['Unnamed: 0', 'sleep_minutes', 'wo_calories', 'bed_time', 'steps']
+None,17,rf,60,8.5,6.75,['floors', 'bed_time', 'distance_walking', 'wo_calories', 'active_calories']
+K-roll,40,rf,60,9.0,4.75,['bed_time', 'Unnamed: 0', 'sleep_minutes', 'wo_calories', 'floors']
+KNN-intra,155,rf,60,7.645,6.323,['wo_calories', 'Unnamed: 0', 'steps', 'sleep_minutes', 'bed_time']
+KNN-inter,1120,rf,60,9.674,7.853,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time', 'steps']
