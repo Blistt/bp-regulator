@@ -2,8 +2,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from utils import aggregate_dicts
+from utils import aggregate_dicts, average_dicts
 from collections import defaultdict
+from sklearn.utils import resample
 
 
 class BloodPresurePredictor:
@@ -59,6 +60,35 @@ class BloodPresurePredictor:
             self.mae[bp_type] = mean_absolute_error(y_test[bp_type], self.pred[bp_type])
             temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type))
         self.feature_importances = aggregate_dicts(temp_f_importances[0], temp_f_importances[1])
+
+
+    def bootstrap(self, dataset, iterations, size):
+        bootstrap_size = int(size * dataset.shape[0])
+        mse_values = defaultdict(list)
+        mae_values = defaultdict(list)
+        pred = defaultdict(list)
+        feature_importances = []
+
+        for i in range(iterations):
+            # Resamples the dataset
+            resampled_dataset = resample(dataset, n_samples=bootstrap_size)
+            self.predict(resampled_dataset)
+            for bp_type in ['systolic', 'diastolic']:
+                mse_values[bp_type].append(self.mse[bp_type])
+                mae_values[bp_type].append(self.mae[bp_type])
+                pred[bp_type].append(self.pred[bp_type])
+            feature_importances.append(self.feature_importances)
+
+        # Averages the metrics for each blood pressure type
+        for bp_type in ['systolic', 'diastolic']:
+            self.mse[bp_type] = sum(mse_values[bp_type]) / iterations
+            self.mae[bp_type] = sum(mae_values[bp_type]) / iterations
+            self.pred[bp_type] = None
+
+        # Averages the feature importances for all iterations
+        self.feature_importances = average_dicts(feature_importances)
+
+
 
 
 

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 def fix_sys_dias(bp):
     '''
@@ -61,7 +62,11 @@ def replace_nan(df):
     
     return df
 
+
 def aggregate_dicts(dict1, dict2):
+    '''
+    Aggregates two dictionaries by averaging the values of common keys and adding the unique keys
+    '''
     result = {}
 
     all_keys = set(dict1.keys()).union(set(dict2.keys()))
@@ -76,27 +81,53 @@ def aggregate_dicts(dict1, dict2):
             result[key] = dict2[key]
 
     # Sort the dictionary by value
-    result = sorted(result.items(), key=lambda item: item[1], reverse=True)
+    result = {k: v for k, v in sorted(result.items(), key=lambda item: item[1], reverse=True)}
     
     return result
 
-def log_exp(file, bp_predictor, aug='None', N=5, double=False):
+
+def average_dicts(dict_list):
+    '''
+    Averages the values of a list of dictionaries with the same keys
+    '''
+    avg_dict = defaultdict(float)
+
+    # Iterate over all dictionaries and all keys and sum the values
+    for d in dict_list:
+        for k, v in d.items():
+            avg_dict[k] += v
+
+    # Divide the sums by the number of dictionaries to get the averages
+    for k in avg_dict:
+        avg_dict[k] /= len(dict_list)
+
+    return avg_dict
+
+
+def log_exp(file, bp_predictor, aug='None', N=5, double=False, bootstrap=False):
+    '''
+    Logs the results of an experiment to a file
+    '''
+
+    # Extract the relevant information (metrics, model, parameters, etc.) from the bp_predictor object
     aug = aug
     dataset_size = bp_predictor.dataset_size
     model = bp_predictor.model_type
     ntrees = bp_predictor.ntrees
     sys_mae = round(bp_predictor.mae['systolic'], 3)
     dias_mae = round(bp_predictor.mae['diastolic'], 3)
-    # Get only the keys of the top N features
-    top_N = [f[0] for f in bp_predictor.feature_importances[:N]]
+    top_N = list(bp_predictor.feature_importances.keys())[:N]   # Get only the keys of the top N features
+
+    top_N = '; '.join(top_N)
 
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
         # Checks that entry is not a duplicate row
-        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{double}\n'
+        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{double},{bootstrap}\n'
         if line not in f.readlines():
             f.write(line)
     
-    print(f'''aug:, {aug}, size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, 
-          top_n: {top_N}, double: {double}''')
+    print(f'''aug:, {aug}, dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, 
+          top_n: {top_N}, double run: {double}, bootstrap: {bootstrap}''')
+
 
