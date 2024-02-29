@@ -1,43 +1,34 @@
-﻿Augmentaion,Dataset size,Algo,n-trees,sys-MAE,dia-MAE,Top N,,,,
-None,17,rf,60,8.5,6.75,['floors', 'bed_time', 'distance_walking', 'wo_calories', 'active_calories']
-K-roll,40,rf,60,9,4.75,['bed_time', 'Unnamed: 0', 'sleep_minutes', 'wo_calories', 'floors']
-KNN-intra,155,rf,60,7.645,6.323,['wo_calories', 'Unnamed: 0', 'steps', 'sleep_minutes', 'bed_time']
-KNN-inter,1120,rf,60,9.674,7.853,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time', 'steps']
-None,17,rf,60,9,3,['floors', 'distance_walking', 'bed_time', 'steps', 'sleep_minutes']
-K-roll,40,rf,60,7.75,7.5,['floors', 'Unnamed: 0', 'wo_calories', 'sleep_minutes', 'distance_walking']
-KNN-intra,155,rf,60,7.903,5.419,['wo_calories', 'Unnamed: 0', 'sleep_minutes', 'steps', 'bed_time']
-KNN-inter,1120,rf,60,9.085,7.188,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time', 'steps']
-None,17,rf,60,9.25,10.75,['floors', 'distance_walking', 'active_calories', 'bed_time', 'wo_calories']
-K-roll,40,rf,60,7.375,6.75,['Unnamed: 0', 'floors', 'bed_time', 'wo_calories', 'distance_cycling']
-KNN-intra,155,rf,60,6.484,6.032,['wo_calories', 'Unnamed: 0', 'bed_time', 'sleep_minutes', 'steps']
-KNN-inter,1120,rf,60,9.902,7.299,['Unnamed: 0', 'sleep_minutes', 'wo_calories', 'bed_time', 'steps']
-None,17,rf,60,11.0,7.75,['distance_walking', 'steps', 'floors', 'bed_time', 'active_calories']
-K-roll,40,rf,60,7.875,6.5,['Unnamed: 0', 'wo_calories', 'bed_time', 'distance_walking', 'sleep_minutes']
-KNN-intra,155,rf,60,6.806,5.516,['wo_calories', 'Unnamed: 0', 'bed_time', 'sleep_minutes', 'steps']
-KNN-inter,1120,rf,60,9.835,8.375,['Unnamed: 0', 'wo_calories', 'bed_time', 'sleep_minutes', 'steps']
-None,17,rf,60,8.75,2.5,['floors', 'active_calories', 'distance_walking', 'bed_time', 'steps']
-K-roll,40,rf,60,11.875,3.5,['Unnamed: 0', 'bed_time', 'floors', 'sleep_minutes', 'wo_calories']
-KNN-intra,155,rf,60,5.871,5.226,['Unnamed: 0', 'wo_calories', 'bed_time', 'sleep_minutes', 'distance_walking']
-None,17,rf,60,11.5,7.5,['distance_walking', 'steps', 'floors', 'bed_time', 'active_calories']
-K-roll,40,rf,60,8.625,3.25,['floors', 'Unnamed: 0', 'sleep_minutes', 'wo_calories', 'bed_time']
-KNN-intra,155,rf,60,6.226,6.097,['wo_calories', 'Unnamed: 0', 'steps', 'sleep_minutes', 'bed_time']
-KNN-inter,1120,rf,60,9.991,8.46,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time', 'steps']
-None,17,rf,60,12.25,9.0,['active_calories', 'floors', 'bed_time', 'distance_walking', 'wo_calories']
-K-roll,40,rf,60,8.75,7.375,['Unnamed: 0', 'floors', 'bed_time', 'sleep_minutes', 'distance_walking']
-KNN-intra,155,rf,60,7.903,6.129,['wo_calories', 'Unnamed: 0', 'sleep_minutes', 'steps', 'distance_walking']
-None,17,rf,60,14.5,5.75,['floors', 'distance_walking', 'steps', 'bed_time', 'active_calories']
-K-roll,40,rf,60,8.625,7.5,['Unnamed: 0', 'sleep_minutes', 'bed_time', 'floors', 'active_calories']
-KNN-intra,155,rf,60,8.29,6.645,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'floors', 'bed_time']
-KNN-inter,1120,rf,60,9.888,7.844,['Unnamed: 0', 'wo_calories', 'sleep_minutes', 'bed_time', 'steps']
-None,17,rf,60,14.0,5.25,['bed_time', 'wo_calories', 'distance_walking', 'steps', 'floors']
-K-roll,40,rf,60,9.625,4.5,['floors', 'Unnamed: 0', 'bed_time', 'wo_calories', 'active_calories']
-KNN-intra,155,rf,60,8.194,7.032,['wo_calories', 'Unnamed: 0', 'steps', 'sleep_minutes', 'bed_time']
-KNN-inter,1120,rf,60,10.603,8.04,['Unnamed: 0', 'sleep_minutes', 'wo_calories', 'bed_time', 'steps']
-None,17,rf,60,12.25,5.75,['floors', 'steps', 'distance_walking', 'bed_time', 'sleep_minutes']
-K-roll,40,rf,60,6.75,7.25,['floors', 'wo_calories', 'sleep_minutes', 'distance_cycling', 'bed_time']
-KNN-intra,155,rf,60,5.774,6.581,['wo_calories', 'steps', 'floors', 'bed_time', 'sleep_minutes']
-KNN-inter,1120,rf,60,10.996,8.857,['sleep_minutes', 'wo_calories', 'bed_time', 'steps', 'distance_walking']
-None,17,rf,60,8.25,6.75,['floors', 'bed_time', 'distance_walking', 'sleep_minutes', 'wo_calories']
-K-roll,40,rf,60,9.25,9.625,['active_calories', 'floors', 'distance_walking', 'sleep_minutes', 'bed_time']
-KNN-intra,155,rf,60,6.677,4.871,['wo_calories', 'steps', 'sleep_minutes', 'floors', 'bed_time']
-KNN-inter,1120,rf,60,11.29,8.402,['sleep_minutes', 'wo_calories', 'bed_time', 'steps', 'distance_walking']
+﻿Augmentaion,Dataset size,Algo,n-trees,sys-MAE,dia-MAE,Top N
+None,17,rf,60,7.5,6.0,['distance_walking', 'bed_time', 'floors', 'wo_calories', 'distance_cycling'],False
+None,17,rf,60,9.5,7.0,['floors', 'distance_walking', 'steps', 'bed_time', 'distance_cycling'],False
+None,86,rf,60,11.111,5.278,['bed_time', 'steps', 'floors', 'distance_walking', 'distance_cycling'],True
+None,40,rf,60,12.125,11.375,['active_calories', 'sleep_minutes', 'bed_time', 'wo_calories', 'floors'],False
+None,17,rf,60,7.75,5.25,['floors', 'wo_calories', 'bed_time', 'sleep_minutes', 'active_calories'],True
+None,155,rf,60,6.806,7.194,['wo_calories', 'steps', 'sleep_minutes', 'floors', 'bed_time'],False
+None,155,rf,60,5.484,4.935,['wo_calories', 'steps', 'sleep_minutes', 'bed_time', 'floors'],True
+None,1120,rf,60,10.982,8.674,['wo_calories', 'bed_time', 'sleep_minutes', 'steps', 'distance_walking'],False
+None,1120,rf,60,10.562,8.612,['wo_calories', 'bed_time', 'sleep_minutes', 'steps', 'distance_walking'],True
+None,17,rf,60,14.0,5.75,['steps', 'floors', 'active_calories', 'wo_calories', 'distance_walking'],False
+None,96,rf,60,11.15,7.15,['wo_calories', 'distance_walking', 'active_calories', 'steps', 'floors'],True
+None,40,rf,60,14.25,8.375,['active_calories', 'floors', 'wo_calories', 'distance_walking', 'bed_time'],False
+None,17,rf,60,12.75,8.25,['distance_walking', 'wo_calories', 'bed_time', 'floors', 'active_calories'],True
+None,155,rf,60,8.645,6.097,['wo_calories', 'steps', 'sleep_minutes', 'bed_time', 'distance_walking'],False
+None,155,rf,60,6.839,5.29,['wo_calories', 'steps', 'bed_time', 'sleep_minutes', 'distance_walking'],True
+None,1120,rf,60,11.656,8.786,['wo_calories', 'sleep_minutes', 'bed_time', 'steps', 'distance_walking'],False
+None,1120,rf,60,11.379,9.487,['wo_calories', 'sleep_minutes', 'bed_time', 'steps', 'distance_walking'],True
+None,17,rf,60,7.5,3.0,['floors', 'distance_walking', 'bed_time', 'steps', 'sleep_minutes'],False
+None,86,rf,60,8.833,9.222,['bed_time', 'floors', 'steps', 'sleep_minutes', 'distance_walking'],True
+None,40,rf,60,9.375,8.25,['wo_calories', 'sleep_minutes', 'bed_time', 'floors', 'distance_cycling'],False
+None,17,rf,60,8.0,8.0,['floors', 'wo_calories', 'bed_time', 'sleep_minutes', 'distance_cycling'],True
+None,155,rf,60,7.387,4.774,['wo_calories', 'sleep_minutes', 'steps', 'bed_time', 'active_calories'],False
+None,155,rf,60,8.29,5.645,['wo_calories', 'sleep_minutes', 'steps', 'bed_time', 'active_calories'],True
+None,1120,rf,60,9.237,8.219,['wo_calories', 'sleep_minutes', 'bed_time', 'steps', 'distance_walking'],False
+None,1120,rf,60,11.098,8.152,['wo_calories', 'sleep_minutes', 'bed_time', 'steps', 'distance_walking'],True
+None,17,rf,60,6.75,6.5,['floors', 'distance_walking', 'steps', 'bed_time', 'sleep_minutes'],False
+None,86,rf,60,7.389,6.722,['bed_time', 'sleep_minutes', 'floors', 'steps', 'distance_walking'],True
+None,40,rf,60,9.375,5.5,['floors', 'sleep_minutes', 'wo_calories', 'bed_time', 'active_calories'],False
+None,17,rf,60,11.0,5.0,['floors', 'bed_time', 'active_calories', 'sleep_minutes', 'wo_calories'],True
+None,155,rf,60,8.129,5.484,['wo_calories', 'steps', 'sleep_minutes', 'bed_time', 'floors'],False
+None,155,rf,60,6.806,6.774,['wo_calories', 'steps', 'bed_time', 'sleep_minutes', 'floors'],True
+None,1120,rf,60,10.518,7.295,['sleep_minutes', 'wo_calories', 'bed_time', 'steps', 'distance_walking'],False
+None,1120,rf,60,9.5,8.013,['wo_calories', 'sleep_minutes', 'bed_time', 'steps', 'distance_walking'],True

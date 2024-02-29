@@ -80,7 +80,7 @@ def aggregate_dicts(dict1, dict2):
     
     return result
 
-def log_exp(file, bp_predictor, aug='None', N=5):
+def log_exp(file, bp_predictor, aug='None', N=5, double=False):
     aug = aug
     dataset_size = bp_predictor.dataset_size
     model = bp_predictor.model_type
@@ -93,7 +93,10 @@ def log_exp(file, bp_predictor, aug='None', N=5):
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
         # Checks that entry is not a duplicate row
-        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N}\n'
+        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{double}\n'
         if line not in f.readlines():
             f.write(line)
+    
+    print(f'''aug:, {aug}, size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, 
+          top_n: {top_N}, double: {double}''')
 
