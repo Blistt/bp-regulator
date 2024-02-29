@@ -60,3 +60,22 @@ def replace_nan(df):
     df.loc[mask] = df.loc[mask].fillna(0)
     
     return df
+
+def aggregate_dicts(dict1, dict2):
+    result = {}
+
+    all_keys = set(dict1.keys()).union(set(dict2.keys()))
+
+    for key in all_keys:
+        # Average the values if the key is in both dictionaries
+        if key in dict1 and key in dict2:
+            result[key] = (dict1[key] + dict2[key]) / 2
+        elif key in dict1:
+            result[key] = dict1[key]
+        else:
+            result[key] = dict2[key]
+
+    # Sort the dictionary by value
+    result = sorted(result.items(), key=lambda item: item[1], reverse=True)
+    
+    return result
