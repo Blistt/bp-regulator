@@ -118,7 +118,10 @@ def log_exp(file, bp_predictor, aug='None', N=5, double=False, bootstrap=False):
     dias_mae = round(bp_predictor.mae['diastolic'], 3)
     top_N = list(bp_predictor.feature_importances.keys())[:N]   # Get only the keys of the top N features
 
-    top_N = '; '.join(top_N)
+    if( double == False):
+        top_N = '; '.join(top_N)
+    else:
+        top_N = 'N/A'
 
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
@@ -127,7 +130,12 @@ def log_exp(file, bp_predictor, aug='None', N=5, double=False, bootstrap=False):
         if line not in f.readlines():
             f.write(line)
     
-    print(f'''aug:, {aug}, dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, 
-          top_n: {top_N}, double run: {double}, bootstrap: {bootstrap}''')
+    print(f'''dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, top_n: {top_N}, double run: {double}, bootstrap: {bootstrap}''')
 
 
+def get_unique_healthCodes(dataset, threshold=2):
+    grouped = dataset.dropna().groupby('healthCode').count()
+    # Filter rows where count of unique healthCodes is greater than the threshold
+    unique_healthCodes = dataset[dataset['healthCode'].isin(grouped[grouped['date'] > threshold].index)]
+    unique_healthCodes = unique_healthCodes.dropna()['healthCode'].unique()
+    return unique_healthCodes

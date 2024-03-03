@@ -41,10 +41,10 @@ class BloodPresurePredictor:
     def predict(self, dataset):
         # Pre-processes the dataset
         dataset = dataset.copy()
-        angel_dataset = dataset.drop(columns=['healthCode', 'date'], axis=1)
-        angel_dataset = angel_dataset.dropna()
-        self.dataset_size = angel_dataset.shape[0]  # Stores the size of the valid dataset
-        (x_train, y_train), (x_test, y_test) = self.data_split(angel_dataset)
+        dataset = dataset.drop(columns=['healthCode', 'date'], axis=1)
+        dataset = dataset.dropna()
+        self.dataset_size = dataset.shape[0]  # Stores the size of the valid dataset
+        (x_train, y_train), (x_test, y_test) = self.data_split(dataset)
 
         # Initializes the model and lists to store metrics and feature importances
         if self.model_type == 'rf':
