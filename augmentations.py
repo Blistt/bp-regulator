@@ -26,12 +26,12 @@ def rolling_k_days(predictor, k):
 def historical_BP(predictor, k):
     data = predictor.copy()
     #Sorting the data by healthCode and date
-    predictor.sort_values(by=['healthCode', 'date'], inplace=True)
+    data.sort_values(by=['healthCode', 'date'], inplace=True)
 
     for col in ['systolic', 'diastolic']:
-        data[col+'_'+k] = predictor.groupby('healthCode')[col].transform(lambda x: x.rolling(window=k, min_periods=1).mean())
+        data[col+'_'+str(k)] = data.groupby('healthCode')[col].rolling(window='3D', min_periods=1, closed='left').mean()
 
-    return historical_BP
+    return data
 
 
 def check_columns(predictor):
