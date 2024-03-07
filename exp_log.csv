@@ -954,3 +954,18 @@ KNN-inter,(224, 11),xgb,60,12.254,9.536,N/A,True,True
 None,(4, 11),xgb,60,21.0,5.0,active_calories; floors; sleep_minutes; distance_walking; distance_cycling,False,False
 KNN-intra,(31, 11),xgb,60,7.467,4.267,wo_calories; awake_count; steps; sleep_minutes; active_calories,False,False
 KNN-inter,(224, 11),xgb,60,8.987,6.699,steps; wo_calories; awake_count; active_calories; bed_time,False,False
+None,(4, 11),xgb,60,9.0,5.5,steps; sleep_minutes; floors; distance_walking; distance_cycling,False,True
+None,(4, 11),xgb,60,10.0,7.25,N/A,True,True
+K-roll,(8, 11),xgb,60,20.125,12.375,active_calories; steps; sleep_minutes; awake_count; wo_calories,False,True
+K-roll,(8, 11),xgb,60,15.125,11.125,N/A,True,True
+KNN-intra,(31, 11),xgb,60,8.226,6.323,wo_calories; awake_count; active_calories; steps; bed_time,False,True
+KNN-intra,(31, 11),xgb,60,7.323,5.129,N/A,True,True
+KNN-inter,(224, 11),xgb,60,12.388,8.946,wo_calories; active_calories; bed_time; steps; awake_count,False,True
+KNN-inter,(224, 11),xgb,60,12.567,9.402,N/A,True,True
+K-roll,(8, 11),xgb,60,21.0,2.0,wo_calories; distance_cycling; steps; floors; bed_time,False,False
+KNN-intra,(31, 11),xgb,60,5.2,3.5,wo_calories; awake_count; steps; sleep_minutes; floors,False,False
+KNN-inter,(224, 11),xgb,60,9.902,7.569,steps; bed_time; wo_calories; sleep_minutes; active_calories,False,False
+None,(4, 11),xgb,60,3.0,2.0,wo_calories; steps; distance_cycling; floors; sleep_minutes,False,False
+K-roll,(8, 11),xgb,60,11.5,5.5,awake_count; wo_calories; steps; floors; bed_time,False,False
+KNN-intra,(31, 11),xgb,60,3.875,4.688,wo_calories; awake_count; steps; active_calories; floors,False,False
+KNN-inter,(224, 11),xgb,60,9.898,6.777,wo_calories; steps; awake_count; sleep_minutes; bed_time,False,False
