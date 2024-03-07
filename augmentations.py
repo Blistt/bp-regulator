@@ -12,8 +12,6 @@ def rolling_k_days(predictor, k):
     predictor = predictor.copy()
     # Ensure the data is sorted by 'date'
     predictor.sort_values(by=['healthCode', 'date'], inplace=True)
-    # Replace 0s with NaNs
-    # predictor.replace(0, np.nan, inplace=True)
 
     # Get all column names except the indexing and target variable columns
     cols = [col for col in predictor.columns if col not in ['healthCode', 'date', 'systolic', 'diastolic']]

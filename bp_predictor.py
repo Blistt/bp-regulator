@@ -1,34 +1,30 @@
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from utils import aggregate_dicts, average_dicts
 from collections import defaultdict
 from sklearn.utils import resample
+from utils import data_split
+import pandas as pd
 
 
 class BloodPresurePredictor:
-    def __init__(self, model_type='rf', ntrees=30):
+    def __init__(self, model_type='rf', ntrees=30, target_cols=['systolic', 'diastolic']):
         self.model_type = model_type
         self.ntrees = ntrees
         self.model = defaultdict()
+        self.ftmodel = defaultdict()
         self.pred = defaultdict()
         self.mse = defaultdict()
         self.mae = defaultdict()
         self.feature_importances = None
-        self.dataset_size = None
-      
+        self.target_cols = target_cols
 
-    def data_split(self, dataset, y_columns=['diastolic', 'systolic']):
-        train, test = train_test_split(dataset, test_size=0.2)
-        y_train = train[y_columns]
-        y_test = test[y_columns]
-        x_train = train.drop(columns=y_columns, axis=1)
-        x_test = test.drop(columns=y_columns, axis=1)
-        return (x_train, y_train), (x_test, y_test)
-    
 
     def get_feature_importances(self, features, bp_type):
+        '''
+        Extracts the feature importances from the model and stores them in a dictionary
+        '''
         importances = self.model[bp_type].feature_importances_
         feature_importances = {feature: score for feature, score in zip(features, importances)}
         feature_importances = {k: v for k, v in sorted(feature_importances.items(),   # Sorts the dictionary by value
@@ -38,56 +34,53 @@ class BloodPresurePredictor:
         return feature_importances
     
 
-    def predict(self, dataset):
-        # Pre-processes the dataset
-        dataset = dataset.copy()
-        dataset = dataset.drop(columns=['healthCode', 'date'], axis=1)
-        dataset = dataset.dropna()
-        self.dataset_size = dataset.shape[0]  # Stores the size of the valid dataset
-        (x_train, y_train), (x_test, y_test) = self.data_split(dataset)
-
-        # Initializes the model and lists to store metrics and feature importances
-        if self.model_type == 'rf':
-            model = RandomForestRegressor(n_estimators=self.ntrees)
-        elif self.model_type == 'xgb':
-            model = XGBRegressor(n_estimators=self.ntrees)
-        
+    def fit(self, x_train, y_train, bootstrap=False, bootstrap_size=0.5):
+        '''
+        Fits the selected model (Random Forest or XGBoost) to the training data and stores
+        the feature importances in a dictionary
+        '''
         temp_f_importances = []
-        for bp_type in ['systolic', 'diastolic']:
+        # Creates a model for each blood pressure type
+        for bp_type in self.target_cols:
+            # Initializes the model
+            if self.model_type == 'rf':
+                model = RandomForestRegressor(n_estimators=self.ntrees, bootstrap=bootstrap, max_samples=bootstrap_size)
+            elif self.model_type == 'xgb':
+                model = XGBRegressor(n_estimators=self.ntrees, subsample=bootstrap_size)
             self.model[bp_type] = model.fit(x_train, y_train[bp_type])
-            self.pred[bp_type] = model.predict(x_test).round()
-            self.mse[bp_type] = mean_squared_error(y_test[bp_type], self.pred[bp_type])
-            self.mae[bp_type] = mean_absolute_error(y_test[bp_type], self.pred[bp_type])
             temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type))
         self.feature_importances = aggregate_dicts(temp_f_importances[0], temp_f_importances[1])
 
 
-    def bootstrap(self, dataset, iterations, size):
-        bootstrap_size = int(size * dataset.shape[0])
-        mse_values = defaultdict(list)
-        mae_values = defaultdict(list)
-        pred = defaultdict(list)
-        feature_importances = []
+    def evaluate(self, x_test, y_test, fine_tuned=False):
+        '''
+        Evaluates the model on the test data and stores the predictions and metrics
+        '''
+        for bp_type in self.target_cols:
+            if fine_tuned:
+                self.pred[bp_type] = self.ftmodel[bp_type].predict(x_test).round()
+            else:
+                self.pred[bp_type] = self.model[bp_type].predict(x_test).round()
+            self.mse[bp_type] = mean_squared_error(y_test[bp_type], self.pred[bp_type])
+            self.mae[bp_type] = mean_absolute_error(y_test[bp_type], self.pred[bp_type])
 
-        for i in range(iterations):
-            # Resamples the dataset
-            resampled_dataset = resample(dataset, n_samples=bootstrap_size)
-            self.predict(resampled_dataset)
-            for bp_type in ['systolic', 'diastolic']:
-                mse_values[bp_type].append(self.mse[bp_type])
-                mae_values[bp_type].append(self.mae[bp_type])
-                pred[bp_type].append(self.pred[bp_type])
-            feature_importances.append(self.feature_importances)
 
-        # Averages the metrics for each blood pressure type
-        for bp_type in ['systolic', 'diastolic']:
-            self.mse[bp_type] = sum(mse_values[bp_type]) / iterations
-            self.mae[bp_type] = sum(mae_values[bp_type]) / iterations
-            self.pred[bp_type] = None
+    def fine_tune(self, x_train, y_train, bootstrap_size=1.0):
+        '''
+        Fine tunes the model trained on all users to personalize the model for each user
+        '''
+        # Ensures that the model is not a Random Forest model, but an XGBoost model
+        if self.model_type == 'rf':
+            print('Cannot fine tune a Random Forest model')
+            return
 
-        # Averages the feature importances for all iterations
-        self.feature_importances = average_dicts(feature_importances)
-
+        temp_f_importances = []
+        for bp_type in self.target_cols:
+            # Use the base model and continue training on the user's data
+            self.ftmodel[bp_type] = XGBRegressor(n_estimators=self.ntrees, subsample=bootstrap_size)
+            self.ftmodel[bp_type].fit(x_train, y_train[bp_type], xgb_model=self.model[bp_type])
+            temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type))
+        self.feature_importances = aggregate_dicts(temp_f_importances[0], temp_f_importances[1])
 
 
 

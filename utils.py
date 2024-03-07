@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from collections import defaultdict
+from sklearn.model_selection import train_test_split
 
 def fix_sys_dias(bp):
     '''
@@ -90,35 +91,36 @@ def average_dicts(dict_list):
     '''
     Averages the values of a list of dictionaries with the same keys
     '''
-    avg_dict = defaultdict(float)
+    sum_dict = defaultdict(float)
+    count_dict = defaultdict(int)
 
     # Iterate over all dictionaries and all keys and sum the values
     for d in dict_list:
         for k, v in d.items():
-            avg_dict[k] += v
+            sum_dict[k] += v
+            count_dict[k] += 1
 
-    # Divide the sums by the number of dictionaries to get the averages
-    for k in avg_dict:
-        avg_dict[k] /= len(dict_list)
+    # Divide the sums by the number of dictionaries that contain each key to get the averages
+    avg_dict = {k: sum_dict[k] / count_dict[k] for k in sum_dict}
 
     return avg_dict
 
 
-def log_exp(file, bp_predictor, aug='None', N=5, double=False, bootstrap=False):
+def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=False, test_size=None, personalized=False):
     '''
     Logs the results of an experiment to a file
     '''
 
     # Extract the relevant information (metrics, model, parameters, etc.) from the bp_predictor object
     aug = aug
-    dataset_size = bp_predictor.dataset_size
+    dataset_size = test_size
     model = bp_predictor.model_type
     ntrees = bp_predictor.ntrees
     sys_mae = round(bp_predictor.mae['systolic'], 3)
     dias_mae = round(bp_predictor.mae['diastolic'], 3)
     top_N = list(bp_predictor.feature_importances.keys())[:N]   # Get only the keys of the top N features
 
-    if( double == False):
+    if(second_run == False):
         top_N = '; '.join(top_N)
     else:
         top_N = 'N/A'
@@ -126,11 +128,15 @@ def log_exp(file, bp_predictor, aug='None', N=5, double=False, bootstrap=False):
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
         # Checks that entry is not a duplicate row
-        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{double},{bootstrap}\n'
+        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{second_run},{bootstrap}\n'
         if line not in f.readlines():
             f.write(line)
-    
-    print(f'''dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae}, dias_mae: {dias_mae}, top_n: {top_N}, double run: {double}, bootstrap: {bootstrap}''')
+        
+    if personalized:
+        top_N = 'N/A'
+        
+    print(f'''dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae},
+           dias_mae: {dias_mae}, top_n: {top_N}, second run: {second_run}, bootstrap: {bootstrap}''')
 
 
 def get_unique_healthCodes(dataset, threshold=2):
@@ -139,3 +145,14 @@ def get_unique_healthCodes(dataset, threshold=2):
     unique_healthCodes = dataset[dataset['healthCode'].isin(grouped[grouped['date'] > threshold].index)]
     unique_healthCodes = unique_healthCodes.dropna()['healthCode'].unique()
     return unique_healthCodes
+
+
+def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode', 'date']):
+    dataset = dataset.copy()
+    dataset = dataset.dropna()
+    train, test = train_test_split(dataset, test_size=0.2)
+    y_train = train[y_columns]
+    y_test = test[y_columns]
+    x_train = train.drop(columns=y_columns, axis=1)
+    x_test = test.drop(columns=y_columns, axis=1)
+    return (x_train, y_train), (x_test, y_test)
