@@ -3,3 +3,4 @@ raw_data/
 data/
 __pycache__/
 model_states/
+user_data/

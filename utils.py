@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
+from xgboost import XGBRegressor
+import json
 
 def fix_sys_dias(bp):
     '''
@@ -120,10 +122,7 @@ def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=Fal
     dias_mae = round(bp_predictor.mae['diastolic'], 3)
     top_N = list(bp_predictor.feature_importances.keys())[:N]   # Get only the keys of the top N features
 
-    if(second_run == False):
-        top_N = '; '.join(top_N)
-    else:
-        top_N = 'N/A'
+    top_N = '; '.join(top_N)
 
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
@@ -149,10 +148,86 @@ def get_unique_healthCodes(dataset, threshold=2):
 
 def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode', 'date']):
     dataset = dataset.copy()
-    dataset = dataset.dropna()
+
+    # List of predictor columns (not key or target columns)
+    cols = [col for col in dataset.columns if col not in key_cols + y_columns]
+    # Drop rows where all values in the cols are NaN
+    dataset = dataset.dropna(subset=cols, how='all')
+
     train, test = train_test_split(dataset, test_size=0.2)
     y_train = train[y_columns]
     y_test = test[y_columns]
     x_train = train.drop(columns=y_columns, axis=1)
     x_test = test.drop(columns=y_columns, axis=1)
     return (x_train, y_train), (x_test, y_test)
+
+
+def strat_data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode']):
+    '''
+    Performs stratified data split based on the healthCode column
+    '''
+    dataset = dataset.copy()
+    # List of predictor columns (not key or target columns)
+    cols = [col for col in dataset.columns if col not in key_cols + y_columns]
+    # Drop rows where all values in the cols are NaN
+    dataset = dataset.dropna(subset=cols, how='all')
+
+    x_train = pd.DataFrame()
+    x_test = pd.DataFrame()
+    y_train = pd.DataFrame()
+    y_test = pd.DataFrame()
+
+    for user in dataset[key_cols[0]].unique():
+        user_data = dataset[dataset[key_cols[0]] == user]
+        
+        # Skip users with less than 2 data entries
+        if user_data.shape[0] < 2:
+            continue
+
+        user_x_train, user_x_test, user_y_train, user_y_test = train_test_split(user_data.drop(y_columns, axis=1), 
+                                                                                user_data[y_columns], test_size=0.2, 
+                                                                                random_state=42)
+        x_train = pd.concat([x_train, user_x_train])
+        x_test = pd.concat([x_test, user_x_test])
+        y_train = pd.concat([y_train, user_y_train])
+        y_test = pd.concat([y_test, user_y_test])
+    
+    # Saves the split to csv files
+    train = pd.concat([x_train, y_train], axis=1)
+    test = pd.concat([x_test, y_test], axis=1)
+    train.to_csv('data/train_test/train.csv', index=False)
+    test.to_csv('data/train_test/test.csv', index=False)
+    
+
+    return (x_train, y_train), (x_test, y_test)
+
+
+def historical_BP(predictor, k):
+    '''
+    Here is where we list the historical BP values for each row in master_df
+    '''
+    data = predictor.copy()
+    #Sorting the data by healthCode and date
+    data.sort_values(by=['healthCode', 'date'], inplace=True)
+
+    for col in ['systolic', 'diastolic']:
+        data[col+'_hist'] = data.groupby('healthCode')[col].shift().transform(lambda x:x.ewm(span=k, adjust=True).mean())
+
+    return data
+
+
+def load_user_model(path):
+    
+    # Load the model
+    loaded_model = XGBRegressor()
+    loaded_model.load_model(path)
+    
+    return loaded_model
+
+def load_json_as_dict(file_path):
+    with open(file_path, 'r') as f:
+        data_str = f.read()
+    # Correct the format: replace single quotes with double quotes
+    data_str = data_str.replace("'", '"')
+    data_dict = json.loads(data_str)
+    return data_dict
