@@ -21,11 +21,14 @@ class BloodPresurePredictor:
         self.target_cols = target_cols
 
 
-    def get_feature_importances(self, features, bp_type):
+    def get_feature_importances(self, features, bp_type, ft=True):
         '''
         Extracts the feature importances from the model and stores them in a dictionary
         '''
-        importances = self.model[bp_type].feature_importances_
+        if ft:
+            importances = self.ftmodel[bp_type].feature_importances_
+        else:
+            importances = self.model[bp_type].feature_importances_
         feature_importances = {feature: score for feature, score in zip(features, importances)}
         feature_importances = {k: v for k, v in sorted(feature_importances.items(),   # Sorts the dictionary by value
                               key=lambda item: item[1], reverse=True)}
@@ -54,7 +57,7 @@ class BloodPresurePredictor:
             elif self.model_type == 'xgb':
                 model = XGBRegressor(n_estimators=self.ntrees, subsample=bootstrap_size)
             self.model[bp_type] = model.fit(x_train, y_train[bp_type])
-            temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type))
+            temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type, ft=False))
         self.feature_importances = aggregate_dicts(temp_f_importances[0], temp_f_importances[1])
 
 
@@ -85,7 +88,7 @@ class BloodPresurePredictor:
             # Use the base model and continue training on the user's data
             self.ftmodel[bp_type] = XGBRegressor(n_estimators=self.ntrees, subsample=bootstrap_size)
             self.ftmodel[bp_type].fit(x_train, y_train[bp_type], xgb_model=self.model[bp_type])
-            temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type))
+            temp_f_importances.append(self.get_feature_importances(x_train.columns, bp_type, ft=True))
         self.feature_importances = aggregate_dicts(temp_f_importances[0], temp_f_importances[1])
 
 

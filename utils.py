@@ -108,7 +108,8 @@ def average_dicts(dict_list):
     return avg_dict
 
 
-def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=False, test_size=None, personalized=False):
+def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=False, test_size=None, 
+            historical=False, personalized=False):
     '''
     Logs the results of an experiment to a file
     '''
@@ -134,8 +135,9 @@ def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=Fal
     if personalized:
         top_N = 'N/A'
         
-    print(f'''dataset size: {dataset_size}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae},
-           dias_mae: {dias_mae}, top_n: {top_N}, second run: {second_run}, bootstrap: {bootstrap}''')
+    print(f'''dataset size: {dataset_size[0]}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae},
+           dias_mae: {dias_mae}, top_n: {top_N}, second run: {second_run}, bootstrap: {bootstrap}, 
+           historical: {historical}''')
 
 
 def get_unique_healthCodes(dataset, threshold=2):
@@ -149,16 +151,25 @@ def get_unique_healthCodes(dataset, threshold=2):
 def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode', 'date']):
     dataset = dataset.copy()
 
-    # List of predictor columns (not key or target columns)
-    cols = [col for col in dataset.columns if col not in key_cols + y_columns]
-    # Drop rows where all values in the cols are NaN
+    # List of predictor columns (not key or target columns or historical BP columns)
+    hist_bp = ['systolic_hist', 'diastolic_hist']
+    cols = [col for col in dataset.columns if col not in key_cols + y_columns + hist_bp]
+    # Drop rows where all values in the cols are NaN or 0
     dataset = dataset.dropna(subset=cols, how='all')
+    # Drop rows where all values in the cols are 0
+    dataset = dataset[(dataset[cols] != 0).any(axis=1)]
+
 
     train, test = train_test_split(dataset, test_size=0.2)
     y_train = train[y_columns]
     y_test = test[y_columns]
     x_train = train.drop(columns=y_columns, axis=1)
     x_test = test.drop(columns=y_columns, axis=1)
+
+    # Saves the split to csv files
+    train.to_csv('data/train_test/train_nonstrat.csv', index=False)
+    test.to_csv('data/train_test/test_nonstrat.csv', index=False)
+
     return (x_train, y_train), (x_test, y_test)
 
 
@@ -168,7 +179,8 @@ def strat_data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['he
     '''
     dataset = dataset.copy()
     # List of predictor columns (not key or target columns)
-    cols = [col for col in dataset.columns if col not in key_cols + y_columns]
+    hist_bp = ['systolic_hist', 'diastolic_hist']
+    cols = [col for col in dataset.columns if col not in key_cols + y_columns + hist_bp]
     # Drop rows where all values in the cols are NaN
     dataset = dataset.dropna(subset=cols, how='all')
 

@@ -1,6 +1,4 @@
-/token.txt
-raw_data/
 data/
 __pycache__/
-model_states/
-user_data/
+personalized_model_states/
+nonpersonalized_model_states/
