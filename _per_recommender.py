@@ -29,7 +29,10 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
 
     # Get predictor values for one of the user's test cases
     test_dataset = pd.read_csv(f'{dataset_path}/test.csv')
-    test_entry = test_dataset[test_dataset['healthCode'] == id].iloc[[0]]
+    # Order by date and get the most recent entry
+    test_dataset['date'] = pd.to_datetime(test_dataset['date'])
+    test_dataset = test_dataset.sort_values(by='date')
+    test_entry = test_dataset[test_dataset['healthCode'] == id].iloc[[-1]]
 
     # Generate predictions for boths types of bp for the test entry
     expected_sys = 120.0
