@@ -75,8 +75,8 @@ def get_nonper_recommendations(entry, key, target, n=5, var_adjust=False, verbos
 
 
 if __name__ == '__main__':
-    user_config = 'configs/per_user_config.json'    # default path to the user config
-    query_config = 'configs/query_config.json'      # default path to the query config
+    user_config = 'configs/recommendation/nonper_user_config.json'    # default path to the user config
+    query_config = 'configs/recommendation/query_config.json'      # default path to the query config
 
     # If arguments for the user and/or query configs are provided, use them to replace the default paths
     if len(sys.argv) > 1:
@@ -85,12 +85,12 @@ if __name__ == '__main__':
         query_config = sys.argv[2]      # path to the query config
 
     # Load the user provided predictor values from the user config
-    with open('configs/nonper_user_config.json', 'r') as f:
+    with open(user_config, 'r') as f:
         user_config = json.load(f)
     entry_df = pd.DataFrame([user_config])
 
     # Load the query parameters from the query config
-    with open('configs/query_config.json', 'r') as f:
+    with open(query_config, 'r') as f:
         query_config = json.load(f)
     key = query_config['key']                   # names of the key columns (healthCode, date)
     target = query_config['target']             # name of the columns to predict (systolic, diastolic)

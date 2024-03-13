@@ -25,8 +25,9 @@ def train_nonpersonazlied(dataset, model, ntrees, N, key, target, log_path='', b
         os.makedirs(path_state)
     if not os.path.exists(path_feat):
         os.makedirs(path_feat)
-    bp_predictor.model['systolic'].save_model(f'{path_state}/allusers_systolic.json')
-    bp_predictor.model['diastolic'].save_model(f'{path_state}/allusers_diastolic.json')
+    for bp_type in bp_predictor.target_cols:
+        bp_predictor.model[bp_type].save_model(f'{path_state}/allusers_{bp_type}.json')
+
     # Save dict of feature importances
     with open(f'{path_feat}/all_users.json', 'w') as f:
         f.write(str(bp_predictor.feature_importances))
@@ -42,8 +43,8 @@ def train_nonpersonazlied(dataset, model, ntrees, N, key, target, log_path='', b
         bp_predictor.evaluate(x_test[top_n], y_test)                     # evaluate with top N features
         
         # Save model and log results
-        bp_predictor.model['systolic'].save_model(f'{path_state}/allusers_systolic.json')
-        bp_predictor.model['diastolic'].save_model(f'{path_feat}/allusers_diastolic.json')
+        for bp_type in bp_predictor.target_cols:
+            bp_predictor.model[bp_type].save_model(f'{path_state}/allusers_{bp_type}.json')
         # Save dict of feature importances
         with open(f'{path_feat}/all_users.json', 'w') as f:
             f.write(str(bp_predictor.feature_importances))

@@ -32,6 +32,7 @@ class BloodPresurePredictor:
         feature_importances = {feature: score for feature, score in zip(features, importances)}
         feature_importances = {k: v for k, v in sorted(feature_importances.items(),   # Sorts the dictionary by value
                               key=lambda item: item[1], reverse=True)}
+        
         # Remove features that do not constitute behavioral changes
         if 'heart_rate' in feature_importances:
             del feature_importances['heart_rate']
