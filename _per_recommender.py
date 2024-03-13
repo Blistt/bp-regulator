@@ -1,19 +1,22 @@
-from utils import load_user_model, load_json_as_dict
+from _utils import load_user_model, load_json_as_dict
 import os
 from itertools import islice
 import pandas as pd
+import json
+import sys
 
-def get_per_recommendations(entry, key, target, n=5, var_adjust=False, verbose=False):
+def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=False, entry_num=None):
 
     # Define the paths to the model states, feature importances and the dataset
     model_path = 'personalized_model_states/model_states'
     f_imp_path = 'personalized_model_states/feature_importances'
-    dataset_path = 'data/train_test'
+    dataset_path = '_data/train_test'
     
-    # Get the id of the user to make recommendations for    
-    model_files = os.listdir(model_path)
-    ids = [f.split('_')[0] for f in model_files]
-    id = ids[entry]     # Extract the id of the user to make recommendations for
+    if entry_num:
+        # Get the id of the user to make recommendations for    
+        model_files = os.listdir(model_path)
+        ids = [f.split('_')[0] for f in model_files]
+        id = ids[entry_num]     # Extract the id of the user to make recommendations for
 
     # Load the models for the user
     model_sys = load_user_model(f'{model_path}/{id}_systolic.json')
@@ -88,3 +91,30 @@ def get_per_recommendations(entry, key, target, n=5, var_adjust=False, verbose=F
         print(target_user_entries)
     
     return recs
+
+
+if __name__ == '__main__':
+    user_config = 'configs/per_user_config.json'    # default path to the user config
+    query_config = 'configs/query_config.json'      # default path to the query config
+
+    # If arguments for the user and/or query configs are provided, use them to replace the default paths
+    if len(sys.argv) > 1:
+        user_config = sys.argv[1]       # argument path to the user config
+    if len(sys.argv) > 2:
+        query_config = sys.argv[2]      # argument path to the query config
+
+    # Load the id (healthCode) the user to make recommendations for from the user config
+    with open(user_config, 'r') as f:
+        config = json.load(f)
+    id = config['healthCode']
+
+    # Load the query parameters from the query config
+    with open(query_config, 'r') as f:
+        query_config = json.load(f)
+    key = query_config['key']                   # names of the key columns (healthCode, date)
+    target = query_config['target']             # name of the columns to predict (systolic, diastolic)
+    n = query_config['n']                       # how many features to provide recommendations for
+    var_adjust = query_config['var_adjust']     # whether to adjust the feature importances based on the variance explained
+    verbose = query_config['verbose']           # whether to print the recommendations to the console
+
+    recs = get_per_recommendations(id, key, target, n=n, var_adjust=var_adjust, verbose=verbose)

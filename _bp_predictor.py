@@ -1,10 +1,10 @@
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from utils import aggregate_dicts, average_dicts
+from _utils import aggregate_dicts, average_dicts
 from collections import defaultdict
 from sklearn.utils import resample
-from utils import data_split
+from _utils import data_split
 import pandas as pd
 
 

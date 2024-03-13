@@ -1,5 +1,5 @@
-from bp_predictor import BloodPresurePredictor
-from utils import log_exp, get_unique_healthCodes, average_dicts, strat_data_split, historical_BP
+from _bp_predictor import BloodPresurePredictor
+from _utils import log_exp, get_unique_healthCodes, average_dicts, strat_data_split, historical_BP
 from collections import defaultdict
 import os
 

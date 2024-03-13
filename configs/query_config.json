@@ -1,0 +1,7 @@
+{
+"key": ["healthCode", "date"],
+"target": ["systolic", "diastolic"],
+"n": 5,
+"var_adjust": false,
+"verbose": true
+}

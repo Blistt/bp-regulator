@@ -1,5 +1,5 @@
-from bp_predictor import BloodPresurePredictor
-from utils import log_exp, data_split, historical_BP
+from _bp_predictor import BloodPresurePredictor
+from _utils import log_exp, data_split, historical_BP
 import os
 
 def train_nonpersonazlied(dataset, model, ntrees, N, key, target, log_path='', bootstrap=False, 
