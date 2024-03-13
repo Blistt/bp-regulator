@@ -1,15 +1,15 @@
 {
     "distance_cycling": 0.0,
     "distance_walking": 0.0,
-    "floors": 20.0,
+    "floors": 2.0,
     "active_calories": 300.0,
     "steps": 7000.0,
     "heart_rate": 0.0,
     "sleep_minutes": 300.0,
-    "awake_count": 0.0,
+    "awake_count": 3.0,
     "bed_time": 0.0,
     "active_minutes": 0.0,
     "wo_calories": 0.0,
-    "systolic_hist": 140.0,
+    "systolic_hist": 130.0,
     "diastolic_hist": 80.0
 }

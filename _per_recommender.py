@@ -78,13 +78,13 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
     recs = {}
 
     for key in top_n.keys():
-        recs[key] = x[key] * top_n[key]
+        recs[key] = x[key].item() * top_n[key]
 
     if verbose:
         print('\n Recommendations:')
         for key in top_n.keys():
             print(f'Activity: {key}  -   Value: {x[key].item()}   -  imp_score: {top_n[key]}' 
-                  f'-  Rec: {recs[key].item()}')
+                  f'-  Rec: {recs[key]}')
         train_dataset = pd.read_csv(f'{dataset_path}/train.csv')
         target_user_entries = train_dataset[train_dataset['healthCode'] == id]
         print('\n Target user training entries:')

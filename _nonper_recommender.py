@@ -20,16 +20,16 @@ def get_nonper_recommendations(entry, key, target, n=5, var_adjust=False, verbos
     top_n = dict(islice(feature_importances.items(), n))
 
     # Generate predictions for boths types of bp for the test entry
-    expected_sys = 120.0
-    expected_dia = 80.0
-
     sys_prediction = model_sys.predict(entry)
     print(f'Predicted value: {sys_prediction}')
-    sys_to_correct = sys_prediction - expected_sys
     dia_prediction = model_dia.predict(entry)
     print(f'Predicted value: {dia_prediction}')
+    
+    # Compute correction needed to get the BP predictions in the healthy range
+    expected_sys = 120.0
+    expected_dia = 80.0
+    sys_to_correct = sys_prediction - expected_sys
     dia_to_correct = dia_prediction - expected_dia
-
     if sys_to_correct < 0:
         sys_to_correct = 0
     if dia_to_correct < 0:
@@ -63,13 +63,13 @@ def get_nonper_recommendations(entry, key, target, n=5, var_adjust=False, verbos
     recs = {}
 
     for key in top_n.keys():
-        recs[key] = entry[key] * top_n[key]
+        recs[key] = entry[key].item() * top_n[key]
 
     if verbose:
         print('\n Recommendations:')
         for key in top_n.keys():
             print(f'Activity: {key}  -   Value: {entry[key].item()}   -  imp_score: {top_n[key]}' 
-                  f'-  Rec: {recs[key].item()}')
+                  f'-  Rec: {recs[key]}')
     
     return recs
 
