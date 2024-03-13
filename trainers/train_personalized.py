@@ -4,7 +4,7 @@ from collections import defaultdict
 import os
 
 def train_personalized(dataset, model, ntrees, N, key, target, log_path='', bootstrap=False, 
-               bootstrap_size=0.8, aug='None', second_run=False, historical=True):
+               bootstrap_size=0.8, aug='None', second_run=False, historical=True, exclude=[]):
     # Add historical blood pressure to the dataset if specified
     if historical:
         dataset = historical_BP(dataset, 3)
@@ -17,7 +17,7 @@ def train_personalized(dataset, model, ntrees, N, key, target, log_path='', boot
     x_test = x_test.drop(key, axis=1)
 
     # Get baseline model by running on all users
-    bp_predictor = BloodPresurePredictor(model, ntrees)
+    bp_predictor = BloodPresurePredictor(model, ntrees, target_cols=target, exlude_cols=exclude)
     bp_predictor.fit(x_train, y_train, bootstrap, bootstrap_size)
 
     # Get all unique healthCodes

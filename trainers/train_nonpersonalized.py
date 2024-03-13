@@ -2,7 +2,7 @@ from _bp_predictor import BloodPresurePredictor
 from _utils import log_exp, data_split, historical_BP
 import os
 
-def train_nonpersonazlied(dataset, model, ntrees, N, key, target, log_path='', bootstrap=False, 
+def train_nonpersonazlied(dataset, model, ntrees, N, key, target, exclude=[], log_path='', bootstrap=False, 
                bootstrap_size=0.8, aug='None', historical=True, second_run=True):
     # Add historical blood pressure to the dataset if specified
     if historical:
@@ -14,7 +14,7 @@ def train_nonpersonazlied(dataset, model, ntrees, N, key, target, log_path='', b
     x_test = x_test.drop(key, axis=1)
 
     # Train & evaluate model
-    bp_predictor = BloodPresurePredictor(model, ntrees)             # Create model
+    bp_predictor = BloodPresurePredictor(model, ntrees, target_cols=target, exlude_cols=exclude)  # Create model
     bp_predictor.fit(x_train, y_train, bootstrap, bootstrap_size)   # Train model
     bp_predictor.evaluate(x_test, y_test)                           # Evaluate the model
 

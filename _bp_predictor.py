@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class BloodPresurePredictor:
-    def __init__(self, model_type='rf', ntrees=30, target_cols=['systolic', 'diastolic']):
+    def __init__(self, model_type='rf', ntrees=30, target_cols=['systolic', 'diastolic'], exlude_cols=[]):
         self.model_type = model_type
         self.ntrees = ntrees
         self.model = defaultdict()
@@ -19,6 +19,7 @@ class BloodPresurePredictor:
         self.mae = defaultdict()
         self.feature_importances = None
         self.target_cols = target_cols
+        self.exclude_cols = exlude_cols
 
 
     def get_feature_importances(self, features, bp_type, ft=True):
@@ -34,12 +35,13 @@ class BloodPresurePredictor:
                               key=lambda item: item[1], reverse=True)}
         
         # Remove features that do not constitute behavioral changes
-        if 'heart_rate' in feature_importances:
-            del feature_importances['heart_rate']
-        if 'systolic_hist' in feature_importances:
-            del feature_importances['systolic_hist']
-        if 'diastolic_hist' in feature_importances:
-            del feature_importances['diastolic_hist']
+        for col in self.exclude_cols:       # Removes the excluded columns from the feature importances
+            if col in feature_importances:
+                del feature_importances[col]
+        for col in self.target_cols:        # Removes historical bp values from the feature importances
+            hist_col = col + '_hist'
+            if hist_col in feature_importances:
+                del feature_importances[hist_col]
 
         return feature_importances
     
