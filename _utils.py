@@ -108,7 +108,7 @@ def average_dicts(dict_list):
     return avg_dict
 
 
-def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=False, test_size=None, 
+def log_exp(file, bp_predictor, aug='None', n=5, second_run=False, bootstrap=False, test_size=None, 
             historical=False, personalized=False):
     '''
     Logs the results of an experiment to a file
@@ -121,22 +121,22 @@ def log_exp(file, bp_predictor, aug='None', N=5, second_run=False, bootstrap=Fal
     ntrees = bp_predictor.ntrees
     sys_mae = round(bp_predictor.mae['systolic'], 3)
     dias_mae = round(bp_predictor.mae['diastolic'], 3)
-    top_N = list(bp_predictor.feature_importances.keys())[:N]   # Get only the keys of the top N features
+    top_n = list(bp_predictor.feature_importances.keys())[:n]   # Get only the keys of the top N features
 
-    top_N = '; '.join(top_N)
+    top_n = '; '.join(top_n)
 
     # Log the results as a new row in the file
     with open(file, 'a+') as f:
         # Checks that entry is not a duplicate row
-        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_N},{second_run},{bootstrap}\n'
+        line = f'{aug},{dataset_size},{model},{ntrees},{sys_mae},{dias_mae},{top_n},{second_run},{bootstrap}\n'
         if line not in f.readlines():
             f.write(line)
         
     if personalized:
-        top_N = 'N/A'
+        top_n = 'N/A'
         
     print(f'''dataset size: {dataset_size[0]}, model: {model}, ntrees: {ntrees}, sys_mae: {sys_mae},
-           dias_mae: {dias_mae}, top_n: {top_N}, second run: {second_run}, bootstrap: {bootstrap}, 
+           dias_mae: {dias_mae}, top_n: {top_n}, second run: {second_run}, bootstrap: {bootstrap}, 
            historical: {historical}''')
 
 

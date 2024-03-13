@@ -97,7 +97,7 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
 
 
 if __name__ == '__main__':
-    user_config = 'configs/recommendation/per_user_config.json'    # default path to the user config
+    user_config = 'configs/recommendation/per-user_config.json'    # default path to the user config
     query_config = 'configs/recommendation/query_config.json'      # default path to the query config
 
     # If arguments for the user and/or query configs are provided, use them to replace the default paths

@@ -1,0 +1,9 @@
+{
+    "n": 5,
+    "model": "xgb",
+    "ntrees": 100,
+    "second_run": true,
+    "bootstrap": true,
+    "bootstrap_size": 0.8,
+    "historical": true
+}

@@ -1,0 +1,7 @@
+{
+    "n": 5,
+    "ntrees": 100,
+    "bootstrap": true,
+    "bootstrap_size": 0.8,
+    "historical": true
+}

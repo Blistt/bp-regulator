@@ -1,0 +1,8 @@
+{
+    "datapath": "_data/",
+    "aug": "baseline",
+    "key": ["healthCode", "date"],
+    "target": ["systolic", "diastolic"],
+    "exclude": ["heart_rate"],
+    "log_path": "exp_log.csv"
+}
