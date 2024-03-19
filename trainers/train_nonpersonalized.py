@@ -17,7 +17,7 @@ def train_nonpersonazlied(datapath, model, ntrees, n, key, target, exclude=[], l
         dataset = historical_BP(dataset, 3)
 
     # Split dataset into train and test sets of features and labels
-    (x_train, y_train), (x_test, y_test) = data_split(dataset, y_columns=target, key_cols=key)
+    (x_train, y_train), (x_test, y_test) = data_split(dataset, y_columns=target, key_cols=key, datapath=datapath)
     x_train = x_train.drop(key, axis=1)
     x_test = x_test.drop(key, axis=1)
 

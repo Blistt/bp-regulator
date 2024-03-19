@@ -148,7 +148,7 @@ def get_unique_healthCodes(dataset, threshold=2):
     return unique_healthCodes
 
 
-def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode', 'date']):
+def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode', 'date'], datapath='../_data/'):
     dataset = dataset.copy()
 
     # List of predictor columns (not key or target columns or historical BP columns)
@@ -167,13 +167,13 @@ def data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCo
     x_test = test.drop(columns=y_columns, axis=1)
 
     # Saves the split to csv files
-    train.to_csv('_data/train_test/train_nonstrat.csv', index=False)
-    test.to_csv('_data/train_test/test_nonstrat.csv', index=False)
+    train.to_csv(f'{datapath}/train_test/train_nonstrat.csv', index=False)
+    test.to_csv(f'{datapath}/train_test/test_nonstrat.csv', index=False)
 
     return (x_train, y_train), (x_test, y_test)
 
 
-def strat_data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode']):
+def strat_data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['healthCode'], datapath='../_data/'):
     '''
     Performs stratified data split based on the healthCode column
     '''
@@ -207,8 +207,8 @@ def strat_data_split(dataset, y_columns=['diastolic', 'systolic'], key_cols=['he
     # Saves the split to csv files
     train = pd.concat([x_train, y_train], axis=1)
     test = pd.concat([x_test, y_test], axis=1)
-    train.to_csv('_data/train_test/train.csv', index=False)
-    test.to_csv('_data/train_test/test.csv', index=False)
+    train.to_csv(f'{datapath}/train_test/train.csv', index=False)
+    test.to_csv(f'{datapath}/train_test/test.csv', index=False)
     
 
     return (x_train, y_train), (x_test, y_test)

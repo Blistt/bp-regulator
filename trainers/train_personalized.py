@@ -17,7 +17,7 @@ def train_personalized(datapath, model, ntrees, n, key, target, log_path='', boo
         dataset = historical_BP(dataset, 3)
     
     # Split dataset into train and test sets of features and labels
-    (x_train, y_train), (x_test, y_test) = strat_data_split(dataset, y_columns=target, key_cols=key)
+    (x_train, y_train), (x_test, y_test) = strat_data_split(dataset, y_columns=target, key_cols=key, datapath=datapath)
     x_train_keys = x_train[key]
     x_test_keys = x_test[key]
     x_train = x_train.drop(key, axis=1)

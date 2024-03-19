@@ -28,7 +28,10 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
     top_n = dict(islice(feature_importances.items(), n))
 
     # Get predictor values for one of the user's test cases
-    test_dataset = pd.read_csv(f'{dataset_path}/test.csv')
+    try:
+        test_dataset = pd.read_csv(f'{dataset_path}/test.csv')
+    except:
+        test_dataset = pd.read_csv(f'../{dataset_path}/test.csv')
     # Order by date and get the most recent entry
     test_dataset['date'] = pd.to_datetime(test_dataset['date'])
     test_dataset = test_dataset.sort_values(by='date')
@@ -88,7 +91,10 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
         for key in top_n.keys():
             print(f'Activity: {key}  -   Value: {x[key].item()}   -  imp_score: {top_n[key]}' 
                   f'-  Rec: {recs[key]}')
-        train_dataset = pd.read_csv(f'{dataset_path}/train.csv')
+        try:
+            train_dataset = pd.read_csv(f'{dataset_path}/train.csv')
+        except:
+            train_dataset = pd.read_csv(f'../{dataset_path}/train.csv')
         target_user_entries = train_dataset[train_dataset['healthCode'] == id]
         print('\n Target user training entries:')
         print(target_user_entries)
