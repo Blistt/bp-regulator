@@ -44,6 +44,12 @@ Run the following command:
 python _per_recommender.py
 ```
 
+### Example of Recommendation models
+Recommendations:
+- Activity: active_calories  -   Original value: 355.67 -  Recommendation: +87.44
+- Activity: awake_count  -   Original Value: 2.0   -    Recommendation: 0.1869 (wake up one less time during the night)
+- Activity: sleep_minutes  -   Original Value: 367.0    Recommendation : +33.4101
+
 ## Training
 This system employs one of two trainable configurations: 1) non-personalized training, or 2) personalized training. 
 ### Non-personalized training
