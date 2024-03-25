@@ -99,6 +99,7 @@ def get_per_recommendations(id, key, target, n=5, var_adjust=False, verbose=Fals
         print('\n Target user training entries:')
         print(target_user_entries)
     
+    print(recs)
     return recs
 
 

@@ -1,6 +1,6 @@
 {
     "distance_cycling": 0.0,
-    "distance_walking": 0.0,
+    "distance_walking": 600.0,
     "floors": 2.0,
     "active_calories": 300.0,
     "steps": 7000.0,

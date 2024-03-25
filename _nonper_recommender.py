@@ -67,10 +67,10 @@ def get_nonper_recommendations(entry, key, target, n=5, var_adjust=False, verbos
 
     if verbose:
         print('\n Recommendations:')
-        for key in top_n.keys():
-            print(f'Activity: {key}  -   Value: {entry[key].item()}   -  imp_score: {top_n[key]}' 
-                  f'-  Rec: {recs[key]}')
-    
+        # for key in top_n.keys():
+        #     print(f'Activity: {key}  -   Value: {entry[key].item()}   -  imp_score: {top_n[key]}' 
+        #           f'-  Rec: {recs[key]}')
+    print(recs)
     return recs
 
 
