@@ -1,4 +1,4 @@
-# xgb-blood-pressure-tracker
+# bp-regulator
 
 This repository implements a system that recommends specific behavioral changes of daily activity to a given user in order to regulate daily blood pressure levels.
 
